@@ -18,10 +18,10 @@ export class AuthService {
     @InjectModel(User.name)
     private userModel: Model<User>,
     private jwtService: JwtService,
-  ) {}
+  ) { }
 
   async signup(signUpDto: SignupDto) {
-    const { name, email, password , role} = signUpDto;
+    const { name, email, password, role } = signUpDto;
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const existingUser = await this.userModel.findOne({ email });
@@ -45,18 +45,27 @@ export class AuthService {
   }
 
   async login(loginDto: LoginDto): Promise<{ token: string }> {
-    const { email, password } = loginDto;
 
-    const user = await this.userModel.findOne({ email });
-    if (!user) {
-      throw new UnauthorizedException('Invalid email or password');
+    try {
+      const { email, password } = loginDto;
+
+      const user = await this.userModel.findOne({ email });
+      if (!user) {
+        throw new UnauthorizedException('Invalid email or password');
+      }
+
+      const isPasswordMatched = await bcrypt.compare(password, user.password);
+      if (!isPasswordMatched) {
+        throw new UnauthorizedException('Invalid email or password');
+      }
+      const token = this.jwtService.sign({ id: user._id });
+
+
+      return { token };
+
+    } catch (error) {
+      console.log(error, "error")
     }
 
-    const isPasswordMatched = await bcrypt.compare(password, user.password);
-    if (!isPasswordMatched) {
-      throw new UnauthorizedException('Invalid email or password');
-    }
-    const token = this.jwtService.sign({ id: user._id });
-    return { token };
   }
 }

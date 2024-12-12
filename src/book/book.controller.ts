@@ -21,8 +21,9 @@ import { Role } from 'src/auth/enums/role.enum';
 import { RolesGuard } from 'src/auth/guards/roles.guards';
 
 @Controller('books')
+@UseGuards(AuthGuard())
 export class BookController {
-  constructor(private bookService: BookService) {}
+  constructor(private bookService: BookService) { }
 
   @Get()
   @Roles(Role.Moderator, Role.Admin, Role.User)
@@ -32,7 +33,7 @@ export class BookController {
   }
 
   @Post()
-  @UseGuards(AuthGuard())
+  @UseGuards()
   async createBook(
     @Body()
     book: CreateBookDto,
@@ -44,7 +45,6 @@ export class BookController {
   }
 
   @Get(':id')
-  @UseGuards(AuthGuard())
   async getBook(
     @Param('id')
     id: string,
@@ -53,7 +53,6 @@ export class BookController {
   }
 
   @Put(':id')
-  @UseGuards(AuthGuard())
   async updateBook(
     @Param('id')
     id: string,
@@ -64,7 +63,6 @@ export class BookController {
   }
 
   @Delete(':id')
-  @UseGuards(AuthGuard())
   async deleteBookById(
     @Param('id')
     id: string,

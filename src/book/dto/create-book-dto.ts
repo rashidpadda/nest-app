@@ -5,7 +5,7 @@ import {
   IsNumberString,
   IsString,
 } from 'class-validator';
-import { Category } from '../schemas.ts/book.schema';
+import { Category } from 'src/auth/enums/category.enum';
 import { User } from 'src/auth/schemas/user.schemas';
 
 export class CreateBookDto {
