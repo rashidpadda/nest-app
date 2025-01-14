@@ -10,15 +10,15 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { BookService } from './book.service';
-import { Book } from './schemas.ts/book.schema';
-import { CreateBookDto } from './dto/create-book-dto';
-import { Query as ExpressQuery } from 'express-serve-static-core';
-import { UpdateBookDto } from './dto/update-book-dto';
 import { AuthGuard } from '@nestjs/passport';
+import { Query as ExpressQuery } from 'express-serve-static-core';
 import { Roles } from 'src/auth/decorators/roles.decorators';
 import { Role } from 'src/auth/enums/role.enum';
 import { RolesGuard } from 'src/auth/guards/roles.guards';
+import { BookService } from './book.service';
+import { CreateBookDto } from './dto/create-book-dto';
+import { UpdateBookDto } from './dto/update-book-dto';
+import { Book } from './schemas.ts/book.schema';
 
 @Controller('books')
 @UseGuards(AuthGuard())
@@ -32,7 +32,8 @@ export class BookController {
     return this.bookService.findAll(query);
   }
 
-  @Post()
+
+  @Post('create')
   @UseGuards()
   async createBook(
     @Body()
@@ -40,9 +41,10 @@ export class BookController {
     @Req() req,
   ): Promise<Book> {
     console.log('req', req.body);
-
     return this.bookService.create(book, req.user);
   }
+
+
 
   @Get(':id')
   async getBook(
@@ -51,6 +53,7 @@ export class BookController {
   ): Promise<Book> {
     return this.bookService.findBookById(id);
   }
+
 
   @Put(':id')
   async updateBook(
@@ -62,6 +65,7 @@ export class BookController {
     return this.bookService.updateBookById(id, book);
   }
 
+
   @Delete(':id')
   async deleteBookById(
     @Param('id')
@@ -69,4 +73,8 @@ export class BookController {
   ): Promise<Book> {
     return this.bookService.deleteBookById(id);
   }
+
+
+
+
 }
